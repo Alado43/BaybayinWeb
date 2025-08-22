@@ -1018,3 +1018,7 @@ function App() {
       <Contact />
       <Footer />
     </div>
+  );
+}
+
+ReactDOM.render(<App />, document.getElementById('root'));
