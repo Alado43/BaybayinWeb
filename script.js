@@ -450,4 +450,571 @@ function ResourceForm() {
   }
   
   return (
-    <form onSubmit={handleSubmit} className="
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <div>
+        <label htmlFor="name" className="block text-sm font-medium text-white mb-1">Your Name</label>
+        <input
+          type="text"
+          id="name"
+          name="name"
+          value={formData.name}
+          onChange={handleChange}
+          required
+          className="w-full px-4 py-2 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
+        />
+      </div>
+      
+      <div>
+        <label htmlFor="email" className="block text-sm font-medium text-white mb-1">Your Email</label>
+        <input
+          type="email"
+          id="email"
+          name="email"
+          value={formData.email}
+          onChange={handleChange}
+          required
+          className="w-full px-4 py-2 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
+        />
+      </div>
+      
+      <div>
+        <label htmlFor="resourceName" className="block text-sm font-medium text-white mb-1">Resource Name</label>
+        <input
+          type="text"
+          id="resourceName"
+          name="resourceName"
+          value={formData.resourceName}
+          onChange={handleChange}
+          required
+          className="w-full px-4 py-2 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
+        />
+      </div>
+      
+      <div>
+        <label htmlFor="resourceUrl" className="block text-sm font-medium text-white mb-1">Resource URL</label>
+        <input
+          type="url"
+          id="resourceUrl"
+          name="resourceUrl"
+          value={formData.resourceUrl}
+          onChange={handleChange}
+          required
+          className="w-full px-4 py-2 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
+        />
+      </div>
+      
+      <div>
+        <label htmlFor="type" className="block text-sm font-medium text-white mb-1">Resource Type</label>
+        <select
+          id="type"
+          name="type"
+          value={formData.type}
+          onChange={handleChange}
+          className="w-full px-4 py-2 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
+        >
+          <option value="fonts">Font</option>
+          <option value="app">App</option>
+          <option value="video">Video</option>
+          <option value="event">Event</option>
+          <option value="shop">Merchandise</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+      
+      <div>
+        <label htmlFor="description" className="block text-sm font-medium text-white mb-1">Description</label>
+        <textarea
+          id="description"
+          name="description"
+          rows="3"
+          value={formData.description}
+          onChange={handleChange}
+          required
+          className="w-full px-4 py-2 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
+        ></textarea>
+      </div>
+      
+      <button
+        type="submit"
+        disabled={isLoading}
+        className={`w-full bg-white hover:bg-gray-100 text-amber-700 px-6 py-3 rounded-lg font-medium transition ${isLoading ? 'opacity-75 cursor-not-allowed' : ''}`}
+      >
+        {isLoading ? 'Submitting...' : 'Submit Resource'}
+      </button>
+    </form>
+  );
+}
+
+function MerchandiseGallery() {
+  const [merchandise, setMerchandise] = useState([]);
+  
+  useEffect(() => {
+    api.getMerchandise().then(response => {
+      setMerchandise(response.data);
+    });
+  }, []);
+  
+  return (
+    <section id="merchandise" className="py-16 bg-white">
+      <div className="container mx-auto px-4">
+        <div className="text-center mb-12">
+          <h2 className="text-3xl font-bold text-amber-900 mb-4">Baybayin Merchandise</h2>
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            Show your support for Baybayin with these beautifully designed products.
+          </p>
+          <div className="w-24 h-1 bg-amber-500 mx-auto mt-4"></div>
+        </div>
+        
+        <div className="merchandise-gallery">
+          {merchandise.map(item => (
+            <div key={item.id} className="merchandise-item">
+              <img 
+                src={item.image} 
+                alt={item.title}
+                className="merchandise-image"
+              />
+              <div className="merchandise-info">
+                <h3 className="font-bold text-lg text-amber-900">{item.title}</h3>
+                <p className="text-gray-700 mb-2">{item.description}</p>
+                <div className="flex justify-between items-center">
+                  <span className="text-amber-600 font-bold">{item.price}</span>
+                  <button className="bg-amber-600 hover:bg-amber-700 text-white px-3 py-1 rounded text-sm">
+                    Add to Cart
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function Resources() {
+  const [resources, setResources] = useState([]);
+  const [showResourceForm, setShowResourceForm] = useState(false);
+  
+  useEffect(() => {
+    api.getResources().then(response => {
+      setResources(response.data);
+    });
+  }, []);
+  
+  const getIcon = (type) => {
+    switch(type) {
+      case 'fonts': return 'fa-font';
+      case 'app': return 'fa-mobile-screen';
+      case 'video': return 'fa-video';
+      case 'event': return 'fa-calendar-days';
+      case 'shop': return 'fa-shirt';
+      default: return 'fa-link';
+    }
+  };
+  
+  return (
+    <section id="resources" className="py-16 bg-white">
+      <div className="container mx-auto px-4">
+        <div className="text-center mb-12">
+          <h2 className="text-3xl font-bold text-amber-900 mb-4">Baybayin Resources</h2>
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            Tools, apps, and materials to help you learn and use Baybayin in modern contexts.
+          </p>
+          <div className="w-24 h-1 bg-amber-500 mx-auto mt-4"></div>
+        </div>
+        
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {resources.map(resource => (
+            <div key={resource.id} className="border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition">
+              <div className="bg-amber-100 p-4 flex items-center">
+                <div className="bg-amber-600 text-white p-3 rounded-full mr-4">
+                  <i className={`fas ${getIcon(resource.type)} text-xl`}></i>
+                </div>
+                <div>
+                  <h3 className="font-bold text-lg text-amber-900">{resource.title}</h3>
+                  <p className="text-sm text-amber-800 capitalize">{resource.type}</p>
+                </div>
+              </div>
+              <div className="p-4">
+                <p className="text-gray-700 mb-4">{resource.description}</p>
+                <a href={resource.url} className="text-amber-600 hover:text-amber-800 font-medium inline-flex items-center">
+                  Learn more <i className="fas fa-arrow-right ml-2"></i>
+                </a>
+              </div>
+            </div>
+          ))}
+        </div>
+        
+        <div className="mt-12 bg-gradient-to-r from-amber-500 to-amber-600 rounded-xl p-8 text-white">
+          <div className="md:flex items-center">
+            <div className="md:w-2/3 mb-6 md:mb-0">
+              <h3 className="text-2xl font-bold mb-2">Want to contribute?</h3>
+              <p className="mb-4">We're always looking for more resources to help promote Baybayin. Share your project or resource with us!</p>
+              <button 
+                onClick={() => setShowResourceForm(!showResourceForm)} 
+                className="bg-white text-amber-700 hover:bg-gray-100 px-6 py-2 rounded-lg font-medium transition"
+              >
+                {showResourceForm ? 'Cancel' : 'Submit Resource'}
+              </button>
+            </div>
+            <div className="md:w-1/3 flex justify-center">
+              <i className="fas fa-hands-helping text-6xl opacity-80"></i>
+            </div>
+          </div>
+          
+          {showResourceForm && (
+            <div className="mt-6">
+              <ResourceForm />
+            </div>
+          )}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function NewsSection() {
+  const [news, setNews] = useState([]);
+  
+  useEffect(() => {
+    api.getNews().then(response => {
+      setNews(response.data);
+    });
+  }, []);
+  
+  return (
+    <section id="news" className="py-16 bg-gray-50">
+      <div className="container mx-auto px-4">
+        <div className="text-center mb-12">
+          <h2 className="text-3xl font-bold text-amber-900 mb-4">Baybayin in the News</h2>
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            Stay updated on the latest developments in the Baybayin revival movement.
+          </p>
+          <div className="w-24 h-1 bg-amber-500 mx-auto mt-4"></div>
+        </div>
+        
+        <div className="grid md:grid-cols-3 gap-8">
+          {news.map(item => (
+            <div key={item.id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition">
+              <div className="h-48 bg-amber-200 flex items-center justify-center">
+                <i className="fas fa-newspaper text-6xl text-amber-700 opacity-50"></i>
+              </div>
+              <div className="p-6">
+                <div className="text-sm text-amber-600 mb-2">{new Date(item.date).toLocaleDateString()}</div>
+                <h3 className="text-xl font-bold mb-3 text-amber-900">{item.title}</h3>
+                <p className="text-gray-700 mb-4">{item.summary}</p>
+                <a href={item.url} className="text-amber-600 hover:text-amber-800 font-medium inline-flex items-center">
+                  Read more <i className="fas fa-arrow-right ml-2"></i>
+                </a>
+              </div>
+            </div>
+          ))}
+        </div>
+        
+        <div className="mt-12 text-center">
+          <button className="border-2 border-amber-600 text-amber-600 hover:bg-amber-50 px-6 py-3 rounded-lg font-medium transition">
+            View All News
+          </button>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function ContactForm() {
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    message: ''
+  });
+  const [submitted, setSubmitted] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+  
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
+    try {
+      await api.submitContactForm(formData);
+      setSubmitted(true);
+    } catch (error) {
+      console.error("Error submitting form:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  
+  if (submitted) {
+    return (
+      <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative">
+        <strong className="font-bold">Thank you!</strong>
+        <span className="block sm:inline"> Your message has been sent successfully.</span>
+      </div>
+    );
+  }
+  
+  return (
+    <form onSubmit={handleSubmit} className="space-y-6">
+      <div>
+        <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">Name</label>
+        <input
+          type="text"
+          id="name"
+          name="name"
+          value={formData.name}
+          onChange={handleChange}
+          required
+          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
+        />
+      </div>
+      
+      <div>
+        <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+        <input
+          type="email"
+          id="email"
+          name="email"
+          value={formData.email}
+          onChange={handleChange}
+          required
+          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
+        />
+      </div>
+      
+      <div>
+        <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-1">Message</label>
+        <textarea
+          id="message"
+          name="message"
+          rows="4"
+          value={formData.message}
+          onChange={handleChange}
+          required
+          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
+        ></textarea>
+      </div>
+      
+      <button
+        type="submit"
+        disabled={isLoading}
+        className={`w-full bg-amber-600 hover:bg-amber-700 text-white px-6 py-3 rounded-lg font-medium transition ${isLoading ? 'opacity-75 cursor-not-allowed' : ''}`}
+      >
+        {isLoading ? 'Sending...' : 'Send Message'}
+      </button>
+    </form>
+  );
+}
+
+function NewsletterForm() {
+  const [email, setEmail] = useState('');
+  const [submitted, setSubmitted] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
+    try {
+      await api.subscribeNewsletter(email);
+      setSubmitted(true);
+      setEmail('');
+    } catch (error) {
+      console.error("Error subscribing:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  
+  if (submitted) {
+    return (
+      <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-2 rounded text-sm">
+        Thank you for subscribing!
+      </div>
+    );
+  }
+  
+  return (
+    <form onSubmit={handleSubmit} className="flex">
+      <input
+        type="email"
+        placeholder="Your email address"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        required
+        className="flex-grow px-4 py-2 border border-gray-300 rounded-l-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
+      />
+      <button
+        type="submit"
+        disabled={isLoading}
+        className={`bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-r-lg font-medium transition ${isLoading ? 'opacity-75 cursor-not-allowed' : ''}`}
+      >
+        {isLoading ? '...' : 'Subscribe'}
+      </button>
+    </form>
+  );
+}
+
+function Contact() {
+  return (
+    <section id="contact" className="py-16 bg-white">
+      <div className="container mx-auto px-4">
+        <div className="text-center mb-12">
+          <h2 className="text-3xl font-bold text-amber-900 mb-4">Get Involved</h2>
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            Have questions or want to collaborate? Reach out to us!
+          </p>
+          <div className="w-24 h-1 bg-amber-500 mx-auto mt-4"></div>
+        </div>
+        
+        <div className="grid md:grid-cols-2 gap-12">
+          <div>
+            <h3 className="text-xl font-semibold mb-6 text-amber-900">Contact Us</h3>
+            <ContactForm />
+          </div>
+          
+          <div>
+            <h3 className="text-xl font-semibold mb-6 text-amber-900">Connect With Us</h3>
+            <div className="space-y-6">
+              <div className="flex items-start">
+                <div className="bg-amber-100 p-3 rounded-full mr-4">
+                  <i className="fas fa-envelope text-amber-600"></i>
+                </div>
+                <div>
+                  <h4 className="font-medium text-gray-900">Email</h4>
+                  <p className="text-gray-600">info@baybayinrevival.org</p>
+                </div>
+              </div>
+              
+              <div className="flex items-start">
+                <div className="bg-amber-100 p-3 rounded-full mr-4">
+                  <i className="fas fa-map-marker-alt text-amber-600"></i>
+                </div>
+                <div>
+                  <h4 className="font-medium text-gray-900">Address</h4>
+                  <p className="text-gray-600">Baybayin Cultural Center, Manila, Philippines</p>
+                </div>
+              </div>
+              
+              <div className="flex items-start">
+                <div className="bg-amber-100 p-3 rounded-full mr-4">
+                  <i className="fas fa-hashtag text-amber-600"></i>
+                </div>
+                <div>
+                  <h4 className="font-medium text-gray-900">Social Media</h4>
+                  <div className="flex space-x-4 mt-2">
+                    <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="bg-amber-100 hover:bg-amber-200 text-amber-700 p-2 rounded-full transition">
+                      <i className="fab fa-facebook-f"></i>
+                    </a>
+                    <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="bg-amber-100 hover:bg-amber-200 text-amber-700 p-2 rounded-full transition">
+                      <i className="fab fa-twitter"></i>
+                    </a>
+                    <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="bg-amber-100 hover:bg-amber-200 text-amber-700 p-2 rounded-full transition">
+                      <i className="fab fa-instagram"></i>
+                    </a>
+                    <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" className="bg-amber-100 hover:bg-amber-200 text-amber-700 p-2 rounded-full transition">
+                      <i className="fab fa-youtube"></i>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div className="mt-8 bg-gray-50 p-6 rounded-lg">
+              <h4 className="font-semibold text-gray-900 mb-3">Join Our Newsletter</h4>
+              <p className="text-gray-600 mb-4">Stay updated with Baybayin news, events, and learning resources.</p>
+              <NewsletterForm />
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function Footer() {
+  return (
+    <footer className="bg-amber-900 text-white py-12">
+      <div className="container mx-auto px-4">
+        <div className="grid md:grid-cols-4 gap-8 mb-8">
+          <div>
+            <div className="flex items-center space-x-2 mb-4">
+              <i className="fas fa-scroll text-2xl text-amber-200"></i>
+              <span className="text-xl font-bold">Baybayin<span className="text-amber-200">Revival</span></span>
+            </div>
+            <p className="text-amber-100">
+              Dedicated to preserving and promoting the ancient Filipino script through education, technology, and cultural initiatives.
+            </p>
+          </div>
+          
+          <div>
+            <h4 className="text-lg font-semibold mb-4 text-amber-200">Quick Links</h4>
+            <ul className="space-y-2">
+              <li><a href="#home" className="hover:text-amber-300 transition">Home</a></li>
+              <li><a href="#learn" className="hover:text-amber-300 transition">Learn Baybayin</a></li>
+              <li><a href="#resources" className="hover:text-amber-300 transition">Resources</a></li>
+              <li><a href="#merchandise" className="hover:text-amber-300 transition">Merchandise</a></li>
+              <li><a href="#news" className="hover:text-amber-300 transition">News</a></li>
+              <li><a href="#contact" className="hover:text-amber-300 transition">Contact</a></li>
+            </ul>
+          </div>
+          
+          <div>
+            <h4 className="text-lg font-semibold mb-4 text-amber-200">Resources</h4>
+            <ul className="space-y-2">
+              <li><a href="#resources" className="hover:text-amber-300 transition">Font Downloads</a></li>
+              <li><a href="#resources" className="hover:text-amber-300 transition">Learning Materials</a></li>
+              <li><a href="#resources" className="hover:text-amber-300 transition">Research Papers</a></li>
+              <li><a href="#merchandise" className="hover:text-amber-300 transition">Merchandise</a></li>
+            </ul>
+          </div>
+          
+          <div>
+            <h4 className="text-lg font-semibold mb-4 text-amber-200">Connect</h4>
+            <div className="flex space-x-4 mb-4">
+              <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="bg-amber-800 hover:bg-amber-700 text-white p-2 rounded-full transition">
+                <i className="fab fa-facebook-f"></i>
+              </a>
+              <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="bg-amber-800 hover:bg-amber-700 text-white p-2 rounded-full transition">
+                <i className="fab fa-twitter"></i>
+              </a>
+              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="bg-amber-800 hover:bg-amber-700 text-white p-2 rounded-full transition">
+                <i className="fab fa-instagram"></i>
+              </a>
+              <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" className="bg-amber-800 hover:bg-amber-700 text-white p-2 rounded-full transition">
+                <i className="fab fa-youtube"></i>
+              </a>
+            </div>
+            <p className="text-amber-100">
+              info@baybayinrevival.org<br />
+              +63 912 345 6789
+            </p>
+          </div>
+        </div>
+        
+        <div className="border-t border-amber-800 pt-8 text-center text-amber-200">
+          <p>&copy; {new Date().getFullYear()} Baybayin Revival. All rights reserved.</p>
+        </div>
+      </div>
+    </footer>
+  );
+}
+
+function App() {
+  return (
+    <div className="font-sans text-gray-900">
+      <Navbar />
+      <Hero />
+      <About />
+      <LearnBaybayin />
+      <Resources />
+      <MerchandiseGallery />
+      <NewsSection />
+      <Contact />
+      <Footer />
+    </div>
